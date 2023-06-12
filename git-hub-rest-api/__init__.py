@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import requests
 from urllib.parse import urlencode
+from exception import GitHubException
 
 
 def create_app():
@@ -16,8 +17,6 @@ def create_app():
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
-            # client_id = request.get_data("cleint_id")
-            # client_secrets = request.get_data("client_secrets")
             headers = {"Accept": "application/json"}
             query_string = urlencode(request.get_json())
             github_oauth_url = f"{os.environ.get('GITHUB_OAUTH_URL')}?{query_string}"
@@ -27,7 +26,7 @@ def create_app():
             error = token_json.get("error", None)
 
             if error is not None:
-                raise Exception("Error")
+                raise GitHubException("can not have git acess tocken")
 
             return token_json
 
