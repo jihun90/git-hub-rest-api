@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 import requests
 from urllib.parse import urlencode
-from exception import GitHubException
+from .Exception import GitHubException
 
 
 def create_app():
@@ -32,7 +32,7 @@ def create_app():
 
         return "Error"
 
-    def build_actual_response(response):
+    def build_actual_respGitHubExceptiononse(response):
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
