@@ -10,10 +10,6 @@ def create_app():
     app = Flask(__name__)
     cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
 
-    @app.route("/")
-    def hello_pybo():
-        return "Hello, Pybo!"
-
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
@@ -32,8 +28,21 @@ def create_app():
 
         return "Error"
 
-    def build_actual_respGitHubExceptiononse(response):
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        return response
+    @app.route("/user", methods=["POST"])
+    def get_user_info():
+        acess_token = request.get_json()["access_tocken"]
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {acess_token}",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        response = requests.get(
+            os.environ.get("GITHUB_API_URL") + "/user", headers=headers
+        )
+
+        if response.status_code != 200:
+            raise GitHubException("can not have user info")
+
+        return response.json()
 
     return app
